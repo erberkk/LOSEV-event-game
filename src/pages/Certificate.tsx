@@ -105,9 +105,28 @@ export default function Certificate() {
           <p className="mt-3 font-display text-xl font-extrabold tabular-nums">{certNo}</p>
         </motion.div>
 
-        <a href={EVENT.officialSite} target="_blank" rel="noreferrer" className="mt-8 inline-flex items-center gap-2 font-bold underline decoration-2 underline-offset-4">
-          LÖSEV’e destek ol <Icon name="arrow" className="size-4" />
-        </a>
+        {/* oyun sonu: bir sonraki adım */}
+        <motion.section
+          className="relative mx-auto mt-10 max-w-md overflow-hidden rounded-[1.75rem] border-2 border-ink bg-navy p-6 text-left text-paper shadow-[6px_6px_0_0_var(--color-ink)] sm:p-8"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.6, ease: EASE }}
+        >
+          <div className="absolute inset-x-0 top-0 flex h-1.5">
+            {['#ED1C24', '#FF6A13', '#00AEEF', '#FFC21A', '#FBF6EE'].map((c) => (
+              <span key={c} className="flex-1" style={{ background: c }} />
+            ))}
+          </div>
+          <p className="eyebrow text-sun">Hikâye burada bitmesin</p>
+          <h2 className="mt-2 text-3xl leading-[1] font-extrabold tracking-[-0.03em]">Bir sonraki izi sen bırak.</h2>
+          <p className="mt-3 text-paper/75">Bugün Kadıköy sokaklarında LÖSEV’in izini sürdün. Gönüllü olarak lösemiyle mücadele eden çocukların ve ailelerin yanında olabilirsin.</p>
+          <a href={EVENT.volunteerUrl} target="_blank" rel="noreferrer" className="btn btn-red btn-lg mt-6 w-full !border-paper !shadow-[4px_4px_0_0_var(--color-paper)]">
+            LÖSEV Gönüllüsü Ol <Icon name="arrow" />
+          </a>
+          <a href={EVENT.donateUrl} target="_blank" rel="noreferrer" className="mt-4 flex items-center justify-center gap-2 text-sm font-bold text-paper/85 underline decoration-2 underline-offset-4">
+            ya da bağış yaparak destek ol <Icon name="arrow" className="size-4" />
+          </a>
+        </motion.section>
       </div>
     </Page>
   )

@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { EVENT } from '../data/event'
-import { LETTERS, type LetterId } from '../data/letters'
+import { LETTER_BY_ID, LETTERS, type LetterId } from '../data/letters'
+import { send } from './sync'
 
 /**
  * Oyun durumu. Şimdilik cihazda (localStorage) tutuluyor.
@@ -56,19 +57,21 @@ const rand = (n: number) =>
 
 export const game = {
   register(name: string, contact: string) {
-    set({ ...state, player: { id: rand(10), name: name.trim(), contact: contact.trim(), createdAt: Date.now() } })
+    const player = { id: rand(10), name: name.trim(), contact: contact.trim(), createdAt: Date.now() }
+    set({ ...state, player })
+    send({ type: 'register', playerId: player.id, name: player.name, contact: player.contact, at: player.createdAt })
   },
   markFound(id: LetterId, method: FoundEntry['method']) {
     if (state.found[id]) return
-    const found = { ...state.found, [id]: { at: Date.now(), method } }
-    const done = LETTERS.every((l) => found[l.id])
-    set({
-      ...state,
-      found,
-      ...(done && !state.completedAt
-        ? { completedAt: Date.now(), certNo: `LSV-KDK-${EVENT.year}-${rand(5)}` }
-        : {}),
-    })
+    const at = Date.now()
+    const found = { ...state.found, [id]: { at, method } }
+    const completes = LETTERS.every((l) => found[l.id]) && !state.completedAt
+    const certNo = completes ? `LSV-KDK-${EVENT.year}-${rand(5)}` : state.certNo
+    set({ ...state, found, ...(completes ? { completedAt: at, certNo } : {}) })
+    if (state.player) {
+      send({ type: 'found', playerId: state.player.id, token: LETTER_BY_ID[id].token, method, at })
+      if (completes) send({ type: 'complete', playerId: state.player.id, certNo: certNo!, at })
+    }
   },
   reset() {
     set(EMPTY)
