@@ -12,7 +12,7 @@ const SAFETY = [
 const FAQ = [
   {
     q: 'Harfleri hangi sırayla bulmalıyım?',
-    a: 'İstediğin harften başlayabilirsin. Her harfi doğruladığında sıradaki harfin sokak ipucu açılır. Rota İskele’den başlayıp Moda Sahili’nde bitecek şekilde kurgulandı.',
+    a: 'Rota İskele’de başlıyor ama istediğin harften başlayabilirsin. Her harfi doğruladığında, yürüyerek en yakın harfin sokak ipucu ve arama alanı açılır.',
   },
   {
     q: 'Uygulama indirmem gerekiyor mu?',

@@ -74,8 +74,15 @@ function HeroLetter({ letter, i, progress }: { letter: Letter; i: number; progre
         style={{ opacity: labelOpacity, y: labelY }}
         className="absolute top-full left-1/2 mt-[0.12em] flex -translate-x-1/2 items-center gap-1 rounded-full border-2 border-ink bg-paper px-[0.35em] py-[0.1em] font-sans text-[0.17em] font-extrabold tracking-tight whitespace-nowrap text-ink shadow-[2px_2px_0_0_var(--color-ink)]"
       >
-        <Icon name="pin" className="size-[1.1em]" />
-        {letter.short}
+        {letter.id === 'L' ? (
+          <>
+            <Icon name="pin" className="size-[1.1em]" /> {letter.short}
+          </>
+        ) : (
+          <>
+            <span className="grid size-[1.2em] place-items-center rounded-full bg-ink text-[0.85em] text-paper">?</span> Gizli
+          </>
+        )}
       </motion.span>
     </motion.span>
   )

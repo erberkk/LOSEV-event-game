@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import '@fontsource-variable/bricolage-grotesque'
 import '@fontsource-variable/manrope'
-import 'leaflet/dist/leaflet.css'
 import './index.css'
 import App from './App'
 
