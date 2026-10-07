@@ -59,13 +59,19 @@ Tüm oyun içeriği tek dosyada: **`src/data/letters.ts`**. Konumlar, koordinatl
 - [ ] **Harita karoları:** OpenFreeMap ücretsiz ve adil kullanım esaslı. Etkinlik trafiği öncesi kendilerine haber vermek ya da `VITE_MAP_TILES` ile başka bir sağlayıcıya geçmek değerlendirilmeli.
 - [ ] **Token’lar:** `letters.ts` içindeki QR token’ları yayından önce yeniden üretilmeli.
 
-## Backend (sonraki adım)
+## Katılımcı verileri (Google E-Tablo)
 
-Şu an tüm oyun durumu **oyuncunun cihazında** (localStorage) tutuluyor. Bileşenler yalnızca `src/lib/game.ts` içindeki `useGame()` ve `game.*` fonksiyonlarını kullanıyor; backend buraya bağlanacak. Gerekenler:
+Kayıtlar, bulunan harfler ve tamamlayanların sertifika numaraları **LÖSEV'in kendi Google E-Tablosu'na** canlı yazılır. Sunucu gerekmez. Kurulum rehberi LÖSEV ekibi için yazıldı: [`apps-script/KURULUM.md`](apps-script/KURULUM.md).
 
-1. **Kayıt** (`game.register`): Çekiliş için iletişim bilgisinin sunucuda toplanması.
-2. **Harf doğrulama** (`game.markFound`): Token kontrolü sunucuda yapılmalı. Şu an token’lar istemci kodunda olduğu için hile yapılabilir.
-3. **Fotoğraf yükleme**: `Found.tsx` → `Photo` bileşenindeki TODO.
-4. **Çekiliş listesi ve sertifika no** sunucuda üretilmeli.
+1. LÖSEV hesabında tablo açılır, [`apps-script/Code.gs`](apps-script/Code.gs) yapıştırılır ve Web App olarak dağıtılır.
+2. Çıkan adres `VITE_SHEET_ENDPOINT` olarak ayarlanır.
+3. Tamamlayanlar (çekiliş listesi) "Tamamladı" sütunundan alınır.
 
-Hafif seçenek: Supabase (auth gerektirmeyen anonim kayıt + RLS) ya da tek bir serverless fonksiyon + veritabanı.
+Teknik notlar:
+- Olaylar önce cihazdaki bir kuyruğa yazılır ve gönderilince silinir. Sokakta bağlantı koparsa kaybolmaz; sayfa açılınca ya da bağlantı gelince yeniden gönderilir (`src/lib/sync.ts`).
+- Script QR token'larını doğrular, aynı harfin ilk bulunma zamanını korur ve formül enjeksiyonunu engeller.
+- **Sınır:** Token'lar istemci kodunda olduğu için hevesli biri harfleri sahada bulmadan işaretleyebilir. Çekiliş öncesi tabloda harf saatlerine bakarak (5 harfin birkaç saniye içinde bulunması gibi) şüpheli kayıtlar elenebilir.
+
+## Oyun sonu
+
+Sertifika sayfasının sonunda **"LÖSEV Gönüllüsü Ol"** ([gönüllü ön kayıt](https://www.losev.org.tr/tr/gonullu-kayit)) ve ikincil olarak **bağış** ([losev.org.tr/tr/bagis](https://www.losev.org.tr/tr/bagis)) yönlendirmesi var. Adresler `src/data/event.ts` içinde.
