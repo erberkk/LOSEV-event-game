@@ -24,6 +24,21 @@ npm run build        # dist/ → statik hosting (Vercel/Netlify ayarları hazır
 | `/sertifika` | Kişiye özel sertifika (1080×1350 PNG indir / paylaş) |
 | `/afis` | **Basılacak A4 QR panoları** (5 harf + kayıt afişi). Sunumda “Simüle et” ile QR okutmadan demo yapılır |
 
+## Yürüme rotaları
+
+Harfler arasındaki gerçek yürüme rotaları **önceden hesaplanıp** `src/data/routes.json` dosyasına gömülü. Site çalışırken hiçbir rota servisine istek atmıyor. Hesaplama için OpenStreetMap verisiyle çalışan FOSSGIS OSRM yaya profili kullanıldı.
+
+```bash
+npm run routes   # letters.ts'te koordinat değişince yeniden çalıştır
+```
+
+- **Haritada:** Ana tur gerçek sokaklar üzerinden çiziliyor. Oyuncu "Rotayı göster"e basınca son bulduğu harften sıradakine giden bacak animasyonla çiziliyor ve yürüme süresi gösteriliyor.
+- **Sıradaki harf:** Yürüme mesafesi en kısa olan, henüz bulunmamış harf öneriliyor.
+- **"Konumumu göster":** Canlı mavi nokta ve hedefe kuş uçuşu mesafe gösteriliyor.
+- **"Yol tarifi":** Adım adım navigasyon için telefonun haritasını yürüme modunda açıyor (iOS'ta Apple Haritalar, diğerlerinde Google Maps).
+
+> Not: Brieften gelen L→Ö→S→E→V sırası 3,2 km. Başlangıç ve bitişi koruyan L→E→Ö→S→V sırası 2,4 km.
+
 ## İçeriği düzenlemek
 
 Tüm oyun içeriği tek dosyada: **`src/data/letters.ts`**. Konumlar, koordinatlar, ipuçları, LÖSEV mesajları ve bulmaca soruları orada. Etkinlik adı, tarih ve yıl `src/data/event.ts` içinde.

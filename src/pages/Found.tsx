@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router'
 import { AnimatePresence, motion, useAnimate } from 'motion/react'
 import JoinForm from '../components/JoinForm'
 import { Glyph, Icon, Page, ProgressWord } from '../components/ui'
-import { letterByToken, nextUnfound, type Letter } from '../data/letters'
+import { letterByToken, type Letter } from '../data/letters'
+import { formatWalk, nextLetter } from '../data/routes'
 import { game, useGame } from '../lib/game'
 import { celebrate, cn, EASE } from '../lib/fx'
 import NotFound from './NotFound'
@@ -137,7 +138,7 @@ export default function Found() {
     setTimeout(() => celebrate(count + 1 >= 5), 450)
   }
 
-  const next = nextUnfound(found, letter.id)
+  const { letter: next, route: nextRoute } = nextLetter(found)
   const accent = letter.color === '#FFC21A' ? '#B98300' : letter.color
 
   return (
@@ -242,8 +243,13 @@ export default function Found() {
                       Yeni ipucu açıldı · “{next.char}” harfi
                     </p>
                     <p className="mt-3 font-display text-xl leading-snug font-bold">“{next.clue}”</p>
+                    {nextRoute && (
+                      <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-paper-2 px-3 py-1.5 text-sm font-bold">
+                        <Icon name="walk" className="size-4" /> Buradan yürüyerek {formatWalk(nextRoute)}
+                      </p>
+                    )}
                     <Link to="/oyun" className="btn btn-ink btn-lg mt-6 w-full">
-                      Haritada devam et <Icon name="map" />
+                      Rotayı haritada gör <Icon name="map" />
                     </Link>
                   </motion.div>
                 )

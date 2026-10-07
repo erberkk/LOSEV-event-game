@@ -7,7 +7,8 @@
     "dev": "vite --host",
     "dev:https": "vite --host --mode https",
     "build": "tsc -b && vite build",
-    "preview": "vite preview --host"
+    "preview": "vite preview --host",
+    "routes": "node scripts/build-routes.ts"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",

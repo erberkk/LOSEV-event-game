@@ -140,14 +140,4 @@ export const LETTER_BY_ID = Object.fromEntries(LETTERS.map((l) => [l.id, l])) as
 
 export const letterByToken = (token: string) => LETTERS.find((l) => l.token === token.toLowerCase())
 
-/** `from` harfinden sonra sıradaki bulunmamış harf (döngüsel). */
-export function nextUnfound(found: Partial<Record<LetterId, unknown>>, from?: LetterId) {
-  const start = from ? LETTERS.findIndex((l) => l.id === from) + 1 : 0
-  for (let i = 0; i < LETTERS.length; i++) {
-    const l = LETTERS[(start + i) % LETTERS.length]
-    if (!found[l.id]) return l
-  }
-  return undefined
-}
-
 export const MAP_CENTER: [number, number] = [40.9867, 29.0262]

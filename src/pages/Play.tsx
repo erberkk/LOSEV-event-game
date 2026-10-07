@@ -1,26 +1,23 @@
-import { lazy, Suspense, useCallback, useState } from 'react'
+import { lazy, Suspense, useCallback, useRef, useState } from 'react'
 import { Link, Navigate } from 'react-router'
 import { AnimatePresence, motion } from 'motion/react'
 import { Glyph, Icon, Page, ProgressWord } from '../components/ui'
 import { MapFallback } from '../sections/RouteSection'
-import { LETTERS, nextUnfound, type LetterId } from '../data/letters'
+import { LETTER_BY_ID, LETTERS, type LetterId } from '../data/letters'
+import { directionsUrl, formatWalk, nextLetter } from '../data/routes'
 import { game, useGame } from '../lib/game'
 import { cn, EASE } from '../lib/fx'
 
 const RouteMap = lazy(() => import('../components/RouteMap'))
 const Scanner = lazy(() => import('../components/Scanner'))
 
-export function useNextLetter() {
-  const { found } = useGame()
-  const last = (Object.entries(found) as [LetterId, { at: number }][]).sort((a, b) => b[1].at - a[1].at)[0]?.[0]
-  return nextUnfound(found, last)
-}
-
 export default function Play() {
   const { player, found, count, done } = useGame()
-  const next = useNextLetter()
+  const { letter: next, from, route } = nextLetter(found)
   const [scan, setScan] = useState(false)
-  const [reveal, setReveal] = useState(false)
+  const [revealFor, setRevealFor] = useState<LetterId>()
+  const reveal = !!next && revealFor === next.id
+  const mapRef = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState<LetterId | undefined>()
   const closeScan = useCallback(() => setScan(false), [])
 
@@ -89,27 +86,45 @@ export default function Play() {
               </p>
               <p className="relative mt-3 max-w-[85%] font-display text-[clamp(1.35rem,5vw,1.9rem)] leading-snug font-bold tracking-tight">“{next.clue}”</p>
 
+              {route && from && (
+                <p className="relative mt-4 inline-flex items-center gap-2 rounded-full bg-paper-2 px-3 py-1.5 text-sm font-bold">
+                  <Icon name="walk" className="size-4" />
+                  “{LETTER_BY_ID[from].char}” harfinden yürüyerek {formatWalk(route)}
+                </p>
+              )}
+
               <AnimatePresence initial={false} mode="wait">
                 {reveal ? (
-                  <motion.button
-                    key="place"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => setActive(next.id)}
-                    className="relative mt-5 flex items-center gap-2 rounded-2xl border-2 border-ink bg-white px-4 py-3 text-left font-bold"
-                  >
-                    <span className="grid size-9 shrink-0 place-items-center rounded-full border-2 border-ink" style={{ background: next.color, color: next.ink }}>
-                      <Icon name="pin" className="size-4" />
-                    </span>
-                    <span>
-                      {next.place}
-                      <span className="block text-sm font-medium text-muted">{next.street} · haritada göster</span>
-                    </span>
-                  </motion.button>
+                  <motion.div key="place" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="relative mt-5">
+                    <div className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-white px-4 py-3 font-bold">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full border-2 border-ink" style={{ background: next.color, color: next.ink }}>
+                        <Icon name="pin" className="size-4" />
+                      </span>
+                      <span>
+                        {next.place}
+                        <span className="block text-sm font-medium text-muted">{next.street}</span>
+                      </span>
+                    </div>
+                    <div className="mt-3 grid grid-cols-2 gap-3">
+                      <button onClick={() => mapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })} className="btn btn-paper min-h-12 px-3 text-sm">
+                        <Icon name="map" className="size-4" /> Haritada gör
+                      </button>
+                      <a href={directionsUrl(next.coords)} target="_blank" rel="noreferrer" className="btn btn-blue min-h-12 px-3 text-sm">
+                        <Icon name="walk" className="size-4" /> Yol tarifi
+                      </a>
+                    </div>
+                  </motion.div>
                 ) : (
-                  <motion.button key="btn" exit={{ opacity: 0 }} onClick={() => setReveal(true)} className="relative mt-5 text-sm font-bold underline decoration-2 underline-offset-4">
-                    Bulamadın mı? Konumu göster
+                  <motion.button
+                    key="btn"
+                    exit={{ opacity: 0 }}
+                    onClick={() => {
+                      setRevealFor(next.id)
+                      setTimeout(() => mapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 350)
+                    }}
+                    className="relative mt-5 flex items-center gap-2 text-sm font-bold underline decoration-2 underline-offset-4"
+                  >
+                    <Icon name="map" className="size-4" /> Bulamadın mı? Rotayı göster
                   </motion.button>
                 )}
               </AnimatePresence>
@@ -117,9 +132,16 @@ export default function Play() {
           )
         )}
 
-        <div className="mt-6">
-          <Suspense fallback={<MapFallback className="h-[46svh] min-h-72" />}>
-            <RouteMap className="h-[46svh] min-h-72" found={found} activeId={active} onSelect={setActive} />
+        <div ref={mapRef} className="mt-6 scroll-mt-24">
+          <Suspense fallback={<MapFallback className="h-[52svh] min-h-80" />}>
+            <RouteMap
+              className="h-[52svh] min-h-80"
+              found={found}
+              activeId={active}
+              onSelect={setActive}
+              leg={reveal && next ? { to: next.id, route } : undefined}
+              locate
+            />
           </Suspense>
         </div>
 
