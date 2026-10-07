@@ -2,13 +2,14 @@ import { lazy, Suspense, useCallback, useRef, useState } from 'react'
 import { Link, Navigate } from 'react-router'
 import { AnimatePresence, motion } from 'motion/react'
 import { Glyph, Icon, Page, ProgressWord } from '../components/ui'
-import { MapFallback } from '../sections/RouteSection'
+import MapFallback from '../map/MapFallback'
+import ErrorBoundary from '../components/ErrorBoundary'
 import { LETTER_BY_ID, LETTERS, type LetterId } from '../data/letters'
 import { directionsUrl, formatWalk, nextLetter } from '../data/routes'
 import { game, useGame } from '../lib/game'
 import { cn, EASE } from '../lib/fx'
 
-const RouteMap = lazy(() => import('../components/RouteMap'))
+const GameMap = lazy(() => import('../map/GameMap'))
 const Scanner = lazy(() => import('../components/Scanner'))
 
 export default function Play() {
@@ -18,7 +19,11 @@ export default function Play() {
   const [revealFor, setRevealFor] = useState<LetterId>()
   const reveal = !!next && revealFor === next.id
   const mapRef = useRef<HTMLDivElement>(null)
-  const [active, setActive] = useState<LetterId | undefined>()
+  const [focus, setFocus] = useState<{ id: LetterId; n: number }>()
+  const focusOn = useCallback((id: LetterId) => {
+    setFocus((f) => ({ id, n: (f?.n ?? 0) + 1 }))
+    mapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [])
   const closeScan = useCallback(() => setScan(false), [])
 
   if (!player) return <Navigate to="/katil" replace />
@@ -133,16 +138,11 @@ export default function Play() {
         )}
 
         <div ref={mapRef} className="mt-6 scroll-mt-24">
-          <Suspense fallback={<MapFallback className="h-[52svh] min-h-80" />}>
-            <RouteMap
-              className="h-[52svh] min-h-80"
-              found={found}
-              activeId={active}
-              onSelect={setActive}
-              leg={reveal && next ? { to: next.id, route } : undefined}
-              locate
-            />
-          </Suspense>
+          <ErrorBoundary fallback={<MapFallback className="h-40" text="Harita yüklenemedi. Bağlantını kontrol edip sayfayı yenileyebilir ya da “Yol tarifi” butonunu kullanabilirsin." />}>
+            <Suspense fallback={<MapFallback className="h-[58svh] min-h-80" />}>
+              <GameMap className="h-[58svh] min-h-80" found={found} next={next?.id} revealed={reveal} route={route} focus={focus} onPinClick={focusOn} />
+            </Suspense>
+          </ErrorBoundary>
         </div>
 
         <ul className="mt-6 grid gap-2.5">
@@ -151,8 +151,9 @@ export default function Play() {
             return (
               <li key={l.id}>
                 <button
-                  onClick={() => setActive(l.id)}
-                  className={cn('flex w-full items-center gap-4 rounded-2xl border-2 p-3 text-left transition-colors', f ? 'border-ink bg-white' : 'border-dashed border-ink/30')}
+                  onClick={() => f && focusOn(l.id)}
+                  disabled={!f}
+                  className={cn('flex w-full items-center gap-4 rounded-2xl border-2 p-3 text-left transition-colors', f ? 'border-ink bg-white' : 'cursor-default border-dashed border-ink/30')}
                 >
                   <span className="grid size-12 place-items-center text-4xl">
                     <Glyph letter={l} ghost={!f} />

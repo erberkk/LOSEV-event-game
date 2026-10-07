@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'motion/
 import Hero from '../sections/Hero'
 import { Manifesto, Marquee } from '../sections/Story'
 import HowItWorks from '../sections/HowItWorks'
-import RouteSection from '../sections/RouteSection'
+import Flyover from '../sections/Flyover'
 import Rewards from '../sections/Rewards'
 import Week from '../sections/Week'
 import Faq from '../sections/Faq'
@@ -49,7 +49,10 @@ function MobileCta() {
   const { player } = useGame()
   useMotionValueEvent(scrollY, 'change', (y) => {
     const nearEnd = y + window.innerHeight > document.documentElement.scrollHeight - 900
-    setShow(y > window.innerHeight * 2.4 && !nearEnd)
+    // harita uçuşunda kartın üstüne binmesin (son kartta zaten "Oyuna Katıl" var)
+    const fly = document.getElementById('rota')
+    const inFly = !!fly && y > fly.offsetTop - window.innerHeight * 0.6 && y < fly.offsetTop + fly.offsetHeight - window.innerHeight * 0.4
+    setShow(y > window.innerHeight * 2.4 && !nearEnd && !inFly)
   })
   if (player) return null
   return createPortal(
@@ -79,7 +82,7 @@ export default function Home() {
       <Marquee />
       <Manifesto />
       <HowItWorks />
-      <RouteSection />
+      <Flyover />
       <Rewards />
       <Week />
       <Faq />
