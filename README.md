@@ -1,0 +1,50 @@
+# Kadıköy’de LÖSEV’in İzinde
+
+2–8 Kasım Lösemili Çocuklar Haftası şehir oyunu. İnsan boyundaki L-Ö-S-E-V harfleri Kadıköy’e yerleştiriliyor. Oyuncu QR’ı okutuyor, mini bulmacayı çözüyor ya da fotoğraf çekiyor, sıradaki ipucunu açıyor ve 5 harfi tamamlayınca dijital sertifika ile çekiliş hakkı kazanıyor.
+
+**Teknoloji:** React 19 · Vite · TypeScript · Tailwind v4 · Motion · Leaflet · qr-scanner · html-to-image
+
+## Çalıştırma
+
+```bash
+npm install
+npm run dev          # http://localhost:5173 (aynı ağdaki telefondan da açılır)
+npm run dev:https    # telefonda QR kamerasını test etmek için (kamera HTTPS ister)
+npm run build        # dist/ → statik hosting (Vercel/Netlify ayarları hazır)
+```
+
+## Sayfalar
+
+| Yol | Ne |
+|---|---|
+| `/` | Tanıtım: kayan harf sahnesi, nasıl oynanır, rota haritası, ödüller, SSS |
+| `/katil` | Kayıt (ad, iletişim, KVKK onayı) |
+| `/oyun` | Oyuncu paneli: ilerleme, sıradaki ipucu, harita, QR okut |
+| `/h/:token` | QR’ın açtığı harf sayfası: LÖSEV mesajı → doğrulama → yeni ipucu |
+| `/sertifika` | Kişiye özel sertifika (1080×1350 PNG indir / paylaş) |
+| `/afis` | **Basılacak A4 QR panoları** (5 harf + kayıt afişi). Sunumda “Simüle et” ile QR okutmadan demo yapılır |
+
+## İçeriği düzenlemek
+
+Tüm oyun içeriği tek dosyada: **`src/data/letters.ts`**. Konumlar, koordinatlar, ipuçları, LÖSEV mesajları ve bulmaca soruları orada. Etkinlik adı, tarih ve yıl `src/data/event.ts` içinde.
+
+## Yayın öncesi kontrol listesi
+
+- [ ] **İçerik onayı:** `letters.ts` içindeki bilgi mesajları ve sorular LÖSEV iletişim ekibince onaylanmalı.
+- [ ] **Resmî logo:** `Wordmark` bileşeni (`src/components/ui.tsx`) şu an metin logo. LÖSEV’den SVG logo alınıp değiştirilmeli.
+- [ ] **KVKK aydınlatma metni:** `JoinForm.tsx` içindeki TODO. Hukuk ekibinden alınacak metne link verilmeli.
+- [ ] **Koordinatlar:** OpenStreetMap’ten alındı. Kurulum günü saha ekibi gerçek harf noktasında doğrulamalı.
+- [ ] **`VITE_PUBLIC_URL`:** QR’lara basılacak kalıcı alan adı (`.env.example`). Afişler basıldıktan sonra değişmemeli.
+- [ ] **Harita karoları:** Varsayılan OSM karoları yoğun etkinlik trafiği için uygun değil. MapTiler/Stadia gibi anahtarlı bir sağlayıcı `VITE_TILE_URL` ile ayarlanmalı.
+- [ ] **Token’lar:** `letters.ts` içindeki QR token’ları yayından önce yeniden üretilmeli.
+
+## Backend (sonraki adım)
+
+Şu an tüm oyun durumu **oyuncunun cihazında** (localStorage) tutuluyor. Bileşenler yalnızca `src/lib/game.ts` içindeki `useGame()` ve `game.*` fonksiyonlarını kullanıyor; backend buraya bağlanacak. Gerekenler:
+
+1. **Kayıt** (`game.register`): Çekiliş için iletişim bilgisinin sunucuda toplanması.
+2. **Harf doğrulama** (`game.markFound`): Token kontrolü sunucuda yapılmalı. Şu an token’lar istemci kodunda olduğu için hile yapılabilir.
+3. **Fotoğraf yükleme**: `Found.tsx` → `Photo` bileşenindeki TODO.
+4. **Çekiliş listesi ve sertifika no** sunucuda üretilmeli.
+
+Hafif seçenek: Supabase (auth gerektirmeyen anonim kayıt + RLS) ya da tek bir serverless fonksiyon + veritabanı.

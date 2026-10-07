@@ -1,0 +1,193 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-paper: #fbf6ee;
+  --color-paper-2: #f3ebdd;
+  --color-ink: #14110f;
+  --color-muted: #6b6259;
+  --color-red: #ed1c24;
+  --color-blue: #00aeef;
+  --color-orange: #ff6a13;
+  --color-sun: #ffc21a;
+  --color-navy: #1a2b6d;
+
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    overflow-x: clip;
+  }
+  /* Kâğıt dokusu — afiş hissi */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.07;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection {
+    background: var(--color-sun);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1, h2, h3 {
+    @apply font-display;
+    text-wrap: balance;
+    font-optical-sizing: auto;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Kartonpiyer harf: katmanlı gölgeyle kalınlık hissi */
+  .cardboard {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 0.82;
+    letter-spacing: -0.04em;
+    text-shadow:
+      0.008em 0.008em 0 var(--color-ink),
+      0.016em 0.016em 0 var(--color-ink),
+      0.024em 0.024em 0 var(--color-ink),
+      0.032em 0.032em 0 var(--color-ink),
+      0.04em 0.04em 0 var(--color-ink),
+      0.06em 0.07em 0.04em rgb(20 17 15 / 0.25);
+  }
+  .cardboard-ghost {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 0.82;
+    letter-spacing: -0.04em;
+    /* text-stroke değişken fontun üst üste binen konturlarını gösteriyor; soluk dolgu kullanıyoruz */
+    color: rgb(20 17 15 / 0.08);
+    text-shadow: 0.03em 0.03em 0 rgb(20 17 15 / 0.05);
+  }
+
+  .btn {
+    @apply relative inline-flex min-h-12 select-none items-center justify-center gap-2 rounded-full border-2 border-ink px-6 font-display text-base font-bold tracking-tight transition-[transform,box-shadow,background-color] duration-150 ease-out;
+    box-shadow: 4px 4px 0 0 var(--color-ink);
+  }
+  .btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 0 var(--color-ink);
+  }
+  .btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 0 var(--color-ink);
+  }
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-50;
+    transform: none;
+  }
+  .btn-ink { @apply bg-ink text-paper; }
+  .btn-red { @apply bg-red text-white; }
+  .btn-paper { @apply bg-paper text-ink; }
+  .btn-blue { @apply bg-blue text-white; }
+  .btn-lg { @apply min-h-14 px-8 text-lg; }
+
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full border-2 border-ink bg-paper px-3 py-1 text-xs font-extrabold tracking-wider uppercase;
+  }
+
+  .card {
+    @apply rounded-[1.75rem] border-2 border-ink bg-paper;
+    box-shadow: 6px 6px 0 0 var(--color-ink);
+  }
+
+  .eyebrow {
+    @apply text-xs font-extrabold tracking-[0.2em] uppercase;
+  }
+
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+}
+
+/* ——— Harita ——— */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: var(--color-paper-2);
+}
+.map-warm .leaflet-tile-pane {
+  filter: grayscale(0.55) sepia(0.3) saturate(0.9) contrast(0.92) brightness(1.04);
+}
+.leaflet-control-attribution {
+  font-size: 9px !important;
+  background: rgb(251 246 238 / 0.8) !important;
+}
+.leaflet-control-zoom a {
+  border-radius: 999px !important;
+  border: 2px solid var(--color-ink) !important;
+  margin-bottom: 4px;
+  color: var(--color-ink) !important;
+}
+.leaflet-control-zoom {
+  border: none !important;
+}
+.pin {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px 999px 999px 4px;
+  transform: rotate(-45deg);
+  border: 2.5px solid var(--color-ink);
+  box-shadow: 3px 3px 0 var(--color-ink);
+  transition: transform 0.25s var(--ease-out-expo);
+}
+.pin > span {
+  transform: rotate(45deg);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1;
+}
+.pin.is-active {
+  transform: rotate(-45deg) scale(1.22);
+}
+.pin.is-ghost {
+  background: var(--color-paper) !important;
+  border-style: dashed;
+}
+.pin.is-ghost > span {
+  color: var(--color-ink) !important;
+  opacity: 0.55;
+}
+.route-line {
+  stroke-dasharray: 2 10;
+  animation: route-march 1.2s linear infinite;
+}
+@keyframes route-march {
+  to { stroke-dashoffset: -24; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-line { animation: none; }
+}
+
+/* ——— Baskı (QR afişleri) ——— */
+@media print {
+  @page { size: A4; margin: 0; }
+  body::after, .no-print { display: none !important; }
+  body { background: white; }
+  .poster { break-after: page; box-shadow: none !important; margin: 0 !important; border-radius: 0 !important; }
+}
