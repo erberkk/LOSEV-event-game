@@ -6,4 +6,6 @@ import basicSsl from '@vitejs/plugin-basic-ssl'
 // `npm run dev:https` → telefondan QR kamerasını test etmek için (kamera HTTPS ister)
 export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss(), ...(mode === 'https' ? [basicSsl()] : [])],
+  // `npm run share` ile açılan geçici Cloudflare tüneli
+  preview: { allowedHosts: ['.trycloudflare.com'] },
 }))
