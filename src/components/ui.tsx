@@ -102,7 +102,7 @@ export function SectionTitle({ eyebrow, title, className, light }: { eyebrow: st
   )
 }
 
-export function Icon({ name, className }: { name: 'arrow' | 'qr' | 'map' | 'check' | 'camera' | 'download' | 'share' | 'close' | 'pin' | 'spark' | 'lock'; className?: string }) {
+export function Icon({ name, className }: { name: 'arrow' | 'qr' | 'map' | 'check' | 'camera' | 'download' | 'share' | 'close' | 'pin' | 'spark' | 'lock' | 'locate' | 'walk'; className?: string }) {
   const p: Record<string, ReactNode> = {
     arrow: <path d="M5 12h14m-6-6 6 6-6 6" />,
     qr: (
@@ -131,6 +131,19 @@ export function Icon({ name, className }: { name: 'arrow' | 'qr' | 'map' | 'chec
       </>
     ),
     spark: <path d="M12 3v4m0 10v4M3 12h4m10 0h4M6 6l2.5 2.5m7 7L18 18M6 18l2.5-2.5m7-7L18 6" />,
+    locate: (
+      <>
+        <circle cx="12" cy="12" r="3.5" />
+        <path d="M12 2v3m0 14v3M2 12h3m14 0h3" />
+        <circle cx="12" cy="12" r="7.5" />
+      </>
+    ),
+    walk: (
+      <>
+        <circle cx="13" cy="4.5" r="1.8" />
+        <path d="m9 21 2.5-6 2.5 2.5V21M8 12.5l2-4 3.5-1 2.5 3.5 2.5 1M11.5 15l1.5-5.5" />
+      </>
+    ),
     lock: (
       <>
         <rect x="5" y="11" width="14" height="10" rx="2" />
