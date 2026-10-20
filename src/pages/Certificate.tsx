@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 import { toPng } from 'html-to-image'
 import CertificateCard from '../components/CertificateCard'
 import { Icon, Page } from '../components/ui'
-import { EVENT } from '../data/event'
+import { DEMO, EVENT } from '../data/event'
 import { useGame } from '../lib/game'
 import { celebrate, EASE } from '../lib/fx'
 
@@ -101,7 +101,7 @@ export default function Certificate() {
           transition={{ delay: 0.6 }}
         >
           <p className="eyebrow">Çekiliş hakkın tanımlandı</p>
-          <p className="mt-2 text-ink/80">Özel atölye/etkinlik davetiyesi çekilişine katılıyorsun. Sonuçlar kayıtta verdiğin iletişim bilgisiyle bildirilecek.</p>
+          <p className="mt-2 text-ink/80">{DEMO ? 'Gerçek etkinlikte oyunu tamamlayanlar burada özel atölye/etkinlik davetiyesi çekilişine katılacaktı. (Konsept çalışma: çekiliş yapılmıyor.)' : 'Özel atölye/etkinlik davetiyesi çekilişine katılıyorsun. Sonuçlar kayıtta verdiğin iletişim bilgisiyle bildirilecek.'}</p>
           <p className="mt-3 font-display text-xl font-extrabold tabular-nums">{certNo}</p>
         </motion.div>
 

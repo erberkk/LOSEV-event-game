@@ -9,6 +9,12 @@ export const EVENT = {
   donateUrl: 'https://www.losev.org.tr/tr/bagis',
 }
 
+/**
+ * Portfolyo yayını: etkinlik gerçekleşmedi (iptal). Açıkken sitede "konsept çalışma" notları görünür.
+ * Gerçek etkinlik yayınında VITE_DEMO=0 ile kapatılır.
+ */
+export const DEMO = import.meta.env.VITE_DEMO !== '0'
+
 /** QR kodlarına basılacak kök adres. Prod'da VITE_PUBLIC_URL mutlaka set edilmeli. */
 export const publicUrl = () =>
   (import.meta.env.VITE_PUBLIC_URL as string | undefined)?.replace(/\/$/, '') || window.location.origin

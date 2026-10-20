@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Route, Routes, useLocation } from 'react-router'
 import { AnimatePresence, MotionConfig } from 'motion/react'
 import Header from './components/Header'
+import DemoNotice from './components/DemoNotice'
 import Home from './pages/Home'
 import Join from './pages/Join'
 import Play from './pages/Play'
@@ -16,6 +17,7 @@ export default function App() {
   return (
     <MotionConfig reducedMotion="user">
       <Header />
+      <DemoNotice />
       <AnimatePresence mode="wait" initial={false}>
         <Suspense key={location.pathname} fallback={<div className="min-h-svh" />}>
           <Routes location={location}>

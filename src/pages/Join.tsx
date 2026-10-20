@@ -5,6 +5,7 @@ import { Glyph, Page } from '../components/ui'
 import { LETTERS } from '../data/letters'
 import { useGame } from '../lib/game'
 import { EASE } from '../lib/fx'
+import { DEMO } from '../data/event'
 
 const ROT = [-8, 6, -4, 8, -6]
 
@@ -45,6 +46,11 @@ export default function Join() {
         <motion.p className="mt-4 text-lg text-muted" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
           Kaydını oluştur; ilk ipucun ve interaktif harita hemen açılsın.
         </motion.p>
+        {DEMO && (
+          <p className="mt-4 rounded-2xl border-2 border-dashed border-ink/40 px-4 py-3 text-sm text-muted">
+            <b className="text-ink">Konsept çalışma:</b> etkinlik gerçekleşmedi. Oyunu deneyebilirsin; girdiğin bilgiler yalnızca bu cihazda kalır, hiçbir yere gönderilmez.
+          </p>
+        )}
 
         <motion.div
           className="card mt-8 p-5 sm:p-7"

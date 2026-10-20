@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { EVENT } from '../data/event'
+import { DEMO, EVENT } from '../data/event'
 import { LETTERS } from '../data/letters'
 import { Wordmark } from './ui'
 
@@ -15,7 +15,9 @@ export default function Footer() {
         <div>
           <Wordmark className="text-5xl" />
           <p className="mt-3 max-w-sm text-sm text-paper/60">
-            {EVENT.title} · {EVENT.dates} {EVENT.year} {EVENT.week} kapsamında LÖSEV gönüllüleri tarafından hazırlanmıştır.
+            {DEMO
+              ? `${EVENT.title} · ${EVENT.dates} ${EVENT.week} için LÖSEV’e gönüllü olarak hazırlanmış konsept çalışma. Etkinlik gerçekleşmedi.`
+              : `${EVENT.title} · ${EVENT.dates} ${EVENT.year} ${EVENT.week} kapsamında LÖSEV gönüllüleri tarafından hazırlanmıştır.`}
           </p>
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-paper/80">
